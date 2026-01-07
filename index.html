@@ -1,12 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excel Ma'lumot Qidiruv</title>
+    <title>Excel Qidiruv Pro - Kuchli Qidiruv Dasturi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.sheetjs.com/xlsx-0.19.2/package/dist/xlsx.full.min.js"></script>
     <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border: #dee2e6;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -18,73 +29,104 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             padding: 20px;
-            color: #333;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 2.5rem;
-        }
-        
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 1.1rem;
-        }
-        
-        .upload-section, .search-section {
+        /* HEADER */
+        .header {
             background: white;
             border-radius: 15px;
             padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
         
-        .section-title {
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+        
+        .logo h1 {
+            color: var(--dark);
+            font-size: 1.8rem;
+        }
+        
+        .logo p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* MAIN CONTENT */
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        /* SIDEBAR */
+        .sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            height: fit-content;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+        
+        .sidebar-title {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 20px;
-            color: #3498db;
-            font-size: 1.4rem;
         }
         
-        .section-title i {
-            font-size: 1.6rem;
-        }
-        
-        .file-upload-area {
-            border: 3px dashed #3498db;
+        /* FILE UPLOAD */
+        .upload-area {
+            border: 3px dashed var(--border);
             border-radius: 10px;
-            padding: 40px 20px;
+            padding: 30px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
-            background: #f8fafc;
+            background: var(--light);
+            margin-bottom: 20px;
         }
         
-        .file-upload-area:hover {
-            background: #e8f4fc;
-            border-color: #2980b9;
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: #f0f4ff;
         }
         
-        .file-upload-area i {
+        .upload-area i {
             font-size: 3rem;
-            color: #3498db;
+            color: var(--primary);
             margin-bottom: 15px;
         }
         
@@ -93,22 +135,57 @@
         }
         
         .file-info {
-            margin-top: 15px;
-            padding: 12px;
             background: #e8f4fc;
             border-radius: 8px;
-            display: none;
-            text-align: left;
-            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid var(--primary);
         }
         
-        .file-info.show {
+        /* FILTERS */
+        .filter-group {
+            margin-bottom: 15px;
+        }
+        
+        .filter-group label {
             display: block;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        .filter-select, .filter-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        /* SEARCH SECTION */
+        .search-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         }
         
         .search-box {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .search-box i {
@@ -116,125 +193,102 @@
             left: 20px;
             top: 50%;
             transform: translateY(-50%);
-            color: #7f8c8d;
+            color: var(--gray);
         }
         
         .search-input {
             width: 100%;
             padding: 18px 20px 18px 60px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
             font-size: 1.1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
             transition: all 0.3s;
         }
         
         .search-input:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
         }
         
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
+        /* STATS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
         }
         
-        .stat-item {
+        .stat-card {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 20px;
             text-align: center;
+            border-top: 4px solid var(--primary);
         }
         
         .stat-value {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: bold;
-            color: #2c3e50;
+            color: var(--primary);
+            margin-bottom: 5px;
         }
         
         .stat-label {
+            color: var(--gray);
             font-size: 0.9rem;
-            color: #7f8c8d;
         }
         
-        .results-section {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            display: none;
-        }
-        
-        .results-section.show {
-            display: block;
-        }
-        
+        /* RESULTS */
         .results-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
         }
         
-        .results-count {
-            font-size: 1.2rem;
-            color: #2c3e50;
-        }
-        
-        .results-count span {
-            font-weight: bold;
-            color: #3498db;
-        }
-        
-        .results-list {
-            max-height: 500px;
-            overflow-y: auto;
-            border-radius: 8px;
-        }
-        
-        .result-item {
-            padding: 18px;
-            border-bottom: 1px solid #eee;
-            transition: background 0.2s;
-        }
-        
-        .result-item:hover {
-            background: #f8fafc;
-        }
-        
-        .result-item:last-child {
-            border-bottom: none;
-        }
-        
-        .result-row {
+        .results-tools {
             display: flex;
-            flex-wrap: wrap;
             gap: 10px;
         }
         
-        .result-cell {
-            flex: 1;
-            min-width: 150px;
-            padding: 8px;
+        .results-container {
+            max-height: 600px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border);
         }
         
-        .result-header {
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 5px;
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
         }
         
-        .result-value {
-            color: #555;
-            padding: 5px 10px;
-            background: #f1f8ff;
-            border-radius: 5px;
-            word-break: break-word;
+        .results-table th {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .results-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        
+        .results-table tr:hover {
+            background: #f8f9ff;
         }
         
         .highlight {
-            background-color: #fff3cd;
+            background: #fff3cd;
             padding: 2px 4px;
             border-radius: 3px;
             font-weight: bold;
@@ -242,9 +296,8 @@
         
         .no-results {
             text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
-            font-size: 1.2rem;
+            padding: 50px;
+            color: var(--gray);
         }
         
         .no-results i {
@@ -253,52 +306,73 @@
             color: #bdc3c7;
         }
         
+        /* BUTTONS */
         .btn {
             padding: 12px 24px;
             border: none;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .btn-primary {
-            background: #3498db;
+            background: var(--primary);
             color: white;
         }
         
         .btn-primary:hover {
-            background: #2980b9;
+            background: var(--secondary);
+            transform: translateY(-2px);
         }
         
         .btn-secondary {
-            background: #95a5a6;
+            background: var(--gray);
             color: white;
         }
         
         .btn-secondary:hover {
-            background: #7f8c8d;
+            background: #5a6268;
         }
         
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+        
+        /* LOADING */
         .loading {
             display: none;
             text-align: center;
-            padding: 20px;
+            padding: 40px;
         }
         
-        .loading.show {
+        .loading.active {
             display: block;
         }
         
         .spinner {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
+            border-top: 4px solid var(--primary);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
+            margin: 0 auto 20px;
         }
         
         @keyframes spin {
@@ -306,321 +380,640 @@
             100% { transform: rotate(360deg); }
         }
         
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            color: #7f8c8d;
-            font-size: 0.9rem;
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--dark);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast-success {
+            background: #28a745;
+        }
+        
+        .toast-error {
+            background: #dc3545;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .section-title {
-                font-size: 1.2rem;
-            }
-            
-            .result-cell {
-                min-width: 100%;
-            }
-            
-            .stats {
+            .header {
                 flex-direction: column;
-                gap: 15px;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-tools {
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+            }
+        }
+        
+        /* DARK MODE SUPPORT */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --light: #2d3748;
+                --dark: #f7fafc;
+                --border: #4a5568;
+                --gray: #a0aec0;
+            }
+            
+            body {
+                background: #1a202c;
+            }
+            
+            .sidebar, .search-section, .header, .stat-card {
+                background: #2d3748;
+                color: #f7fafc;
+            }
+            
+            .upload-area {
+                background: #4a5568;
+            }
+            
+            .search-input, .filter-select, .filter-input {
+                background: #4a5568;
+                color: #f7fafc;
+                border-color: #4a5568;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1><i class="fas fa-search"></i> Excel Ma'lumot Qidiruv</h1>
-            <p class="subtitle">Excel fayllaringizdan tez va oson qidiruv amalga oshiring</p>
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-file-excel"></i>
+                <div>
+                    <h1>Excel Qidiruv Pro</h1>
+                    <p>Kuchli va tez Excel ma'lumot qidiruv dasturi</p>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="btn btn-secondary" id="exportBtn">
+                    <i class="fas fa-download"></i> Natijalarni yuklash
+                </button>
+                <button class="btn btn-primary" id="clearBtn">
+                    <i class="fas fa-redo"></i> Tozalash
+                </button>
+            </div>
         </header>
         
-        <div class="upload-section">
-            <div class="section-title">
-                <i class="fas fa-file-upload"></i>
-                <h2>Excel Faylni Yuklash</h2>
-            </div>
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <!-- FILE UPLOAD -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-upload"></i> Fayl yuklash
+                    </h3>
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h4>Faylni bu yerga torting</h4>
+                        <p>XLS, XLSX yoki CSV formatlari</p>
+                        <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls,.csv">
+                    </div>
+                    <div class="file-info" id="fileInfo">
+                        <p><strong>📄 Fayl:</strong> <span id="fileName">Hech narsa yuklanmagan</span></p>
+                        <p><strong>📊 Qatorlar:</strong> <span id="rowCount">0</span></p>
+                        <p><strong>⏱️ Yuklangan:</strong> <span id="fileTime">-</span></p>
+                    </div>
+                </div>
+                
+                <!-- FILTERS -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-filter"></i> Filtrlash
+                    </h3>
+                    <div class="filter-group">
+                        <label for="columnFilter">Ustun bo'yicha filtrlash:</label>
+                        <select id="columnFilter" class="filter-select">
+                            <option value="all">Barcha ustunlar</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="searchType">Qidiruv turi:</label>
+                        <select id="searchType" class="filter-select">
+                            <option value="contains">Matn ichida qidirish</option>
+                            <option value="exact">Aniq mos kelish</option>
+                            <option value="starts">Boshlanishi</option>
+                            <option value="ends">Tugashi</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="caseSensitive">Qidiruv sozlamalari:</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="caseSensitive">
+                            <label for="caseSensitive">Katta-kichik harflarga e'tibor berish</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ADVANCED FEATURES -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-cogs"></i> Qo'shimcha
+                    </h3>
+                    <button class="btn btn-success btn-sm" id="saveSearchBtn">
+                        <i class="fas fa-save"></i> Qidiruvni saqlash
+                    </button>
+                    <button class="btn btn-secondary btn-sm" id="loadSampleBtn" style="margin-top: 10px;">
+                        <i class="fas fa-vial"></i> Namuna fayl yuklash
+                    </button>
+                </div>
+            </aside>
             
-            <div class="file-upload-area" id="uploadArea">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <h3>Faylni bu yerga tortib tashlang yoki bosing</h3>
-                <p>XLS, XLSX yoki CSV formatidagi fayllarni yuklang</p>
-                <input type="file" id="fileInput" class="file-input" accept=".xlsx, .xls, .csv" />
-            </div>
-            
-            <div class="file-info" id="fileInfo">
-                <p><strong>Fayl nomi:</strong> <span id="fileName"></span></p>
-                <p><strong>O'lchami:</strong> <span id="fileSize"></span></p>
-                <p><strong>Yuklandi:</strong> <span id="fileTime"></span></p>
-            </div>
+            <!-- MAIN AREA -->
+            <main class="search-section">
+                <!-- SEARCH BOX -->
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" class="search-input" 
+                           placeholder="Qidiruv so'zini kiriting..." disabled>
+                </div>
+                
+                <!-- STATISTICS -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalRows">0</div>
+                        <div class="stat-label">Jami qatorlar</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalColumns">0</div>
+                        <div class="stat-label">Jami ustunlar</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="foundResults">0</div>
+                        <div class="stat-label">Topilgan natijalar</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="searchTime">0ms</div>
+                        <div class="stat-label">Qidiruv tezligi</div>
+                    </div>
+                </div>
+                
+                <!-- LOADING -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Fayl yuklanmoqda...</p>
+                </div>
+                
+                <!-- RESULTS -->
+                <div class="results-header">
+                    <h3><i class="fas fa-list"></i> Qidiruv Natijalari</h3>
+                    <div class="results-tools">
+                        <button class="btn btn-secondary btn-sm" id="sortBtn">
+                            <i class="fas fa-sort-alpha-down"></i> Tartiblash
+                        </button>
+                        <button class="btn btn-secondary btn-sm" id="hideColsBtn">
+                            <i class="fas fa-eye-slash"></i> Ustunlarni yashirish
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="results-container">
+                    <div id="resultsContent">
+                        <div class="no-results">
+                            <i class="fas fa-search"></i>
+                            <h4>Qidirishni boshlang</h4>
+                            <p>Excel fayl yuklang va qidiruv so'zini kiriting</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
-        
-        <div class="search-section">
-            <div class="section-title">
-                <i class="fas fa-search"></i>
-                <h2>Ma'lumot Qidirish</h2>
-            </div>
-            
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" class="search-input" placeholder="Qidiruv so'zini kiriting..." disabled />
-            </div>
-            
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-value" id="totalRows">0</div>
-                    <div class="stat-label">Jami qatorlar</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="totalColumns">0</div>
-                    <div class="stat-label">Jami ustunlar</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="foundResults">0</div>
-                    <div class="stat-label">Topilgan natijalar</div>
-                </div>
-            </div>
-            
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p>Fayl yuklanmoqda...</p>
-            </div>
-        </div>
-        
-        <div class="results-section" id="resultsSection">
-            <div class="results-header">
-                <div class="section-title">
-                    <i class="fas fa-list"></i>
-                    <h2>Qidiruv Natijalari</h2>
-                </div>
-                <div class="results-count">
-                    Topildi: <span id="resultsCount">0</span>
-                </div>
-            </div>
-            
-            <div class="results-list" id="resultsList">
-                <!-- Natijalar shu yerga joylashtiriladi -->
-            </div>
-        </div>
-        
-        <footer>
-            <p>Excel Qidiruv Dasturi &copy; 2023 | SheetJS kutubxonasi yordamida ishlaydi</p>
-        </footer>
     </div>
-
+    
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Muvaffaqiyatli amalga oshirildi!</span>
+    </div>
+    
     <script>
         let data = [];
         let columns = [];
+        let currentResults = [];
+        let searchHistory = [];
         
-        // Fayl yuklash maydoniga o'zgartirishlar
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const fileInfo = document.getElementById('fileInfo');
-        const fileName = document.getElementById('fileName');
-        const fileSize = document.getElementById('fileSize');
-        const fileTime = document.getElementById('fileTime');
-        const searchInput = document.getElementById('searchInput');
-        const loading = document.getElementById('loading');
-        const resultsSection = document.getElementById('resultsSection');
-        const resultsList = document.getElementById('resultsList');
-        const resultsCount = document.getElementById('resultsCount');
-        const totalRows = document.getElementById('totalRows');
-        const totalColumns = document.getElementById('totalColumns');
-        const foundResults = document.getElementById('foundResults');
+        // DOM Elements
+        const elements = {
+            fileInput: document.getElementById('fileInput'),
+            uploadArea: document.getElementById('uploadArea'),
+            fileInfo: document.getElementById('fileInfo'),
+            fileName: document.getElementById('fileName'),
+            rowCount: document.getElementById('rowCount'),
+            fileTime: document.getElementById('fileTime'),
+            searchInput: document.getElementById('searchInput'),
+            loading: document.getElementById('loading'),
+            resultsContent: document.getElementById('resultsContent'),
+            totalRows: document.getElementById('totalRows'),
+            totalColumns: document.getElementById('totalColumns'),
+            foundResults: document.getElementById('foundResults'),
+            searchTime: document.getElementById('searchTime'),
+            columnFilter: document.getElementById('columnFilter'),
+            searchType: document.getElementById('searchType'),
+            caseSensitive: document.getElementById('caseSensitive'),
+            exportBtn: document.getElementById('exportBtn'),
+            clearBtn: document.getElementById('clearBtn'),
+            saveSearchBtn: document.getElementById('saveSearchBtn'),
+            loadSampleBtn: document.getElementById('loadSampleBtn'),
+            sortBtn: document.getElementById('sortBtn'),
+            hideColsBtn: document.getElementById('hideColsBtn'),
+            toast: document.getElementById('toast'),
+            toastMessage: document.getElementById('toastMessage')
+        };
         
-        // Fayl yuklash maydonini bosganda
-        uploadArea.addEventListener('click', () => {
-            fileInput.click();
-        });
+        // Initialize
+        function init() {
+            setupEventListeners();
+            updateStats();
+            showToast('Dastur tayyor! Excel fayl yuklang.', 'success');
+        }
         
-        // Faylni drag & drop qilish
-        uploadArea.addEventListener('dragover', (e) => {
+        // Event Listeners
+        function setupEventListeners() {
+            // File upload
+            elements.uploadArea.addEventListener('click', () => elements.fileInput.click());
+            elements.uploadArea.addEventListener('dragover', handleDragOver);
+            elements.uploadArea.addEventListener('drop', handleFileDrop);
+            elements.fileInput.addEventListener('change', handleFileSelect);
+            
+            // Search
+            elements.searchInput.addEventListener('input', debounce(handleSearch, 300));
+            
+            // Filters
+            elements.columnFilter.addEventListener('change', handleSearch);
+            elements.searchType.addEventListener('change', handleSearch);
+            elements.caseSensitive.addEventListener('change', handleSearch);
+            
+            // Buttons
+            elements.exportBtn.addEventListener('click', exportResults);
+            elements.clearBtn.addEventListener('click', clearAll);
+            elements.saveSearchBtn.addEventListener('click', saveSearch);
+            elements.loadSampleBtn.addEventListener('click', loadSampleData);
+            elements.sortBtn.addEventListener('click', sortResults);
+            elements.hideColsBtn.addEventListener('click', toggleColumns);
+        }
+        
+        // File Handling
+        async function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            await loadFile(file);
+        }
+        
+        async function handleFileDrop(e) {
             e.preventDefault();
-            uploadArea.style.backgroundColor = '#e1f0fa';
-        });
+            elements.uploadArea.style.backgroundColor = '';
+            
+            const file = e.dataTransfer.files[0];
+            if (!file) return;
+            
+            await loadFile(file);
+        }
         
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.style.backgroundColor = '#f8fafc';
-        });
-        
-        uploadArea.addEventListener('drop', (e) => {
+        function handleDragOver(e) {
             e.preventDefault();
-            uploadArea.style.backgroundColor = '#f8fafc';
-            
-            if (e.dataTransfer.files.length) {
-                fileInput.files = e.dataTransfer.files;
-                handleFileUpload(e.dataTransfer.files[0]);
-            }
-        });
+            elements.uploadArea.style.backgroundColor = '#f0f4ff';
+        }
         
-        // Fayl tanlanganda
-        fileInput.addEventListener('change', function(e) {
-            if (this.files.length) {
-                handleFileUpload(this.files[0]);
-            }
-        });
-        
-        // Faylni yuklash va qayta ishlash
-        function handleFileUpload(file) {
-            // Yuklash indikatorini ko'rsatish
-            loading.classList.add('show');
-            resultsSection.classList.remove('show');
+        async function loadFile(file) {
+            elements.loading.classList.add('active');
             
-            // Fayl ma'lumotlarini ko'rsatish
-            fileName.textContent = file.name;
-            fileSize.textContent = formatFileSize(file.size);
-            fileTime.textContent = new Date().toLocaleTimeString();
-            fileInfo.classList.add('show');
-            
-            const reader = new FileReader();
-            
-            reader.onload = function(event) {
-                try {
-                    const arrayBuffer = event.target.result;
-                    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    
-                    // JSON formatiga o'tkazish
-                    data = XLSX.utils.sheet_to_json(firstSheet);
-                    
-                    // Ustun nomlarini olish
-                    if (data.length > 0) {
-                        columns = Object.keys(data[0]);
-                    }
-                    
-                    // Statistikani yangilash
-                    totalRows.textContent = data.length;
-                    totalColumns.textContent = columns.length;
-                    foundResults.textContent = '0';
-                    
-                    // Qidiruv maydonini yoqish
-                    searchInput.disabled = false;
-                    searchInput.placeholder = "Qidiruv so'zini kiriting...";
-                    
-                    console.log('Excel fayl muvaffaqiyatli yuklandi:', data);
-                    
-                    // Xabarni ko'rsatish
-                    setTimeout(() => {
-                        loading.classList.remove('show');
-                        alert('Excel fayl muvaffaqiyatli yuklandi! ' + data.length + ' ta qator yuklandi. Endi qidirishni boshlashingiz mumkin.');
-                    }, 500);
-                    
-                } catch (error) {
-                    console.error('Xatolik:', error);
-                    loading.classList.remove('show');
-                    alert('Faylni o\'qishda xatolik yuz berdi. Iltimos, fayl formati to\'g\'ri ekanligini tekshiring.');
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                data = XLSX.utils.sheet_to_json(firstSheet);
+                
+                if (data.length > 0) {
+                    columns = Object.keys(data[0]);
+                    populateColumnFilter();
                 }
-            };
+                
+                updateFileInfo(file);
+                updateStats();
+                elements.searchInput.disabled = false;
+                elements.searchInput.placeholder = `Qidirish (${data.length} ta qator)`;
+                
+                showToast(`✅ ${file.name} fayli yuklandi! ${data.length} ta qator.`, 'success');
+                
+            } catch (error) {
+                showToast(`❌ Xatolik: ${error.message}`, 'error');
+            }
             
-            reader.onerror = function() {
-                loading.classList.remove('show');
-                alert('Faylni o\'qishda xatolik yuz berdi.');
-            };
-            
-            reader.readAsArrayBuffer(file);
+            elements.loading.classList.remove('active');
         }
         
-        // Fayl hajmini formatlash
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-        
-        // Qidiruvni amalga oshirish
-        searchInput.addEventListener('input', function(e) {
-            const query = e.target.value.toLowerCase().trim();
-            
-            if (query.length === 0) {
-                resultsSection.classList.remove('show');
-                foundResults.textContent = '0';
+        // Search Functionality
+        function handleSearch() {
+            const query = elements.searchInput.value;
+            if (!query.trim()) {
+                showResults([]);
                 return;
             }
             
-            if (data.length === 0) {
-                alert('Iltimos, avval Excel fayl yuklang.');
-                return;
-            }
+            const startTime = performance.now();
             
-            // Qidiruv natijalarini filtrlash
-            const results = data.filter(row =>
-                Object.values(row).some(val => 
-                    String(val).toLowerCase().includes(query)
-                )
-            );
+            const column = elements.columnFilter.value;
+            const searchType = elements.searchType.value;
+            const caseSensitive = elements.caseSensitive.checked;
             
-            // Natijalarni ko'rsatish
-            displayResults(results, query);
+            const results = data.filter(row => {
+                if (column === 'all') {
+                    return Object.values(row).some(val => 
+                        matchesSearch(String(val || ''), query, searchType, caseSensitive)
+                    );
+                } else {
+                    return matchesSearch(String(row[column] || ''), query, searchType, caseSensitive);
+                }
+            });
             
-            // Statistikani yangilash
-            foundResults.textContent = results.length;
-        });
-        
-        // Natijalarni ekranga chiqarish
-        function displayResults(results, query) {
-            resultsList.innerHTML = '';
-            resultsCount.textContent = results.length;
+            const endTime = performance.now();
+            currentResults = results;
             
-            if (results.length === 0) {
-                resultsList.innerHTML = `
-                    <div class="no-results">
-                        <i class="fas fa-search-minus"></i>
-                        <h3>Hech narsa topilmadi</h3>
-                        <p>"${query}" so'zi bo'yicha hech qanday natija topilmadi.</p>
-                    </div>
-                `;
-            } else {
-                results.forEach((row, index) => {
-                    const resultItem = document.createElement('div');
-                    resultItem.className = 'result-item';
-                    
-                    let rowContent = '<div class="result-row">';
-                    
-                    // Har bir ustun uchun ma'lumot
-                    columns.forEach(column => {
-                        let cellValue = row[column] !== undefined ? String(row[column]) : '';
-                        
-                        // Qidiruv so'zini ajratib ko'rsatish
-                        if (query && cellValue.toLowerCase().includes(query)) {
-                            const regex = new RegExp(`(${query})`, 'gi');
-                            cellValue = cellValue.replace(regex, '<span class="highlight">$1</span>');
-                        }
-                        
-                        rowContent += `
-                            <div class="result-cell">
-                                <div class="result-header">${column}</div>
-                                <div class="result-value">${cellValue || '<em>Bo\'sh</em>'}</div>
-                            </div>
-                        `;
-                    });
-                    
-                    rowContent += '</div>';
-                    resultItem.innerHTML = rowContent;
-                    resultsList.appendChild(resultItem);
+            showResults(results);
+            elements.searchTime.textContent = `${Math.round(endTime - startTime)}ms`;
+            elements.foundResults.textContent = results.length;
+            
+            // Save to history
+            if (results.length > 0) {
+                searchHistory.push({
+                    query,
+                    time: new Date().toLocaleTimeString(),
+                    count: results.length
                 });
             }
-            
-            // Natijalar bo'limini ko'rsatish
-            resultsSection.classList.add('show');
         }
         
-        // Dastur yuklanganda foydalanuvchiga yo'riqnoma ko'rsatish
-        window.addEventListener('DOMContentLoaded', () => {
+        function matchesSearch(text, query, type, caseSensitive) {
+            let searchText = caseSensitive ? text : text.toLowerCase();
+            let searchQuery = caseSensitive ? query : query.toLowerCase();
+            
+            switch(type) {
+                case 'exact': return searchText === searchQuery;
+                case 'starts': return searchText.startsWith(searchQuery);
+                case 'ends': return searchText.endsWith(searchQuery);
+                default: return searchText.includes(searchQuery);
+            }
+        }
+        
+        // Display Results
+        function showResults(results) {
+            if (results.length === 0) {
+                elements.resultsContent.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search-minus"></i>
+                        <h4>Natija topilmadi</h4>
+                        <p>Qidiruv so'zingizga mos ma'lumot topilmadi</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const query = elements.searchInput.value.toLowerCase();
+            const caseSensitive = elements.caseSensitive.checked;
+            
+            let tableHTML = `
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            ${columns.map(col => `<th>${col}</th>`).join('')}
+                            <th>№</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            results.forEach((row, index) => {
+                tableHTML += '<tr>';
+                
+                columns.forEach(col => {
+                    let value = String(row[col] || '');
+                    let displayValue = value;
+                    
+                    if (query && value.toLowerCase().includes(query.toLowerCase())) {
+                        const regex = new RegExp(`(${query})`, caseSensitive ? 'g' : 'gi');
+                        displayValue = value.replace(regex, '<span class="highlight">$1</span>');
+                    }
+                    
+                    tableHTML += `<td>${displayValue || '<em>bo\'sh</em>'}</td>`;
+                });
+                
+                tableHTML += `<td><strong>${index + 1}</strong></td></tr>`;
+            });
+            
+            tableHTML += '</tbody></table>';
+            elements.resultsContent.innerHTML = tableHTML;
+        }
+        
+        // Additional Features
+        function exportResults() {
+            if (currentResults.length === 0) {
+                showToast('Eksport qilish uchun natijalar topilmadi', 'error');
+                return;
+            }
+            
+            const ws = XLSX.utils.json_to_sheet(currentResults);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Natijalar");
+            XLSX.writeFile(wb, `excel-qidiruv-natijalari-${new Date().getTime()}.xlsx`);
+            
+            showToast('✅ Natijalar Excel fayliga yuklandi', 'success');
+        }
+        
+        function clearAll() {
+            data = [];
+            columns = [];
+            currentResults = [];
+            
+            elements.fileInput.value = '';
+            elements.searchInput.value = '';
+            elements.searchInput.disabled = true;
+            elements.searchInput.placeholder = 'Avval fayl yuklang...';
+            
+            elements.fileInfo.classList.remove('show');
+            elements.columnFilter.innerHTML = '<option value="all">Barcha ustunlar</option>';
+            
+            updateStats();
+            showResults([]);
+            
+            showToast('Barcha ma\'lumotlar tozalandi', 'success');
+        }
+        
+        function saveSearch() {
+            const query = elements.searchInput.value;
+            if (!query) {
+                showToast('Qidiruvni saqlash uchun avval qidiruv kiriting', 'error');
+                return;
+            }
+            
+            const searchData = {
+                query,
+                filters: {
+                    column: elements.columnFilter.value,
+                    type: elements.searchType.value,
+                    caseSensitive: elements.caseSensitive.checked
+                },
+                results: currentResults.length,
+                timestamp: new Date().toISOString()
+            };
+            
+            const searches = JSON.parse(localStorage.getItem('excelSearches') || '[]');
+            searches.push(searchData);
+            localStorage.setItem('excelSearches', JSON.stringify(searches.slice(-10))); // Keep last 10
+            
+            showToast('✅ Qidiruv saqlandi', 'success');
+        }
+        
+        async function loadSampleData() {
+            // Create sample data
+            const sampleData = [
+                { ID: 1, Ism: 'Ali', Familiya: 'Valiyev', Yosh: 25, Shahar: 'Toshkent', Ish: 'Dasturchi' },
+                { ID: 2, Ism: 'Dilnoza', Familiya: 'Karimova', Yosh: 30, Shahar: 'Samarqand', Ish: 'O\'qituvchi' },
+                { ID: 3, Ism: 'Botir', Familiya: 'Toshmatov', Yosh: 35, Shahar: 'Buxoro', Ish: 'Savdogar' },
+                { ID: 4, Ism: 'Malika', Familiya: 'Rahmonova', Yosh: 28, Shahar: 'Andijon', Ish: 'Shifokor' },
+                { ID: 5, Ism: 'Javohir', Familiya: 'Saidov', Yosh: 32, Shahar: 'Farg\'ona', Ish: 'Muhandis' }
+            ];
+            
+            data = sampleData;
+            columns = Object.keys(sampleData[0]);
+            
+            populateColumnFilter();
+            updateStats();
+            elements.searchInput.disabled = false;
+            elements.searchInput.placeholder = `Qidirish (${data.length} ta qator)`;
+            
+            elements.fileName.textContent = 'namuna-data.xlsx';
+            elements.rowCount.textContent = data.length;
+            elements.fileTime.textContent = new Date().toLocaleTimeString();
+            elements.fileInfo.classList.add('show');
+            
+            showToast('✅ Namuna ma\'lumotlar yuklandi', 'success');
+        }
+        
+        function sortResults() {
+            if (currentResults.length === 0) return;
+            
+            const column = prompt('Qaysi ustun bo\'yicha tartiblash kerak?', columns[0]);
+            if (!column || !columns.includes(column)) return;
+            
+            currentResults.sort((a, b) => {
+                const valA = String(a[column] || '').toLowerCase();
+                const valB = String(b[column] || '').toLowerCase();
+                return valA.localeCompare(valB);
+            });
+            
+            showResults(currentResults);
+            showToast(`✅ Natijalar "${column}" bo'yicha tartiblandi`, 'success');
+        }
+        
+        function toggleColumns() {
+            const visibleCols = columns.filter(col => 
+                !localStorage.getItem(`hide_${col}`)
+            );
+            
+            if (visibleCols.length === columns.length) {
+                // Hide some columns
+                columns.slice(1, 3).forEach(col => {
+                    localStorage.setItem(`hide_${col}`, 'true');
+                });
+                showToast('2 ta ustun yashirildi', 'success');
+            } else {
+                // Show all columns
+                columns.forEach(col => {
+                    localStorage.removeItem(`hide_${col}`);
+                });
+                showToast('Barcha ustunlar ko\'rsatildi', 'success');
+            }
+            
+            if (currentResults.length > 0) {
+                showResults(currentResults);
+            }
+        }
+        
+        // Utility Functions
+        function populateColumnFilter() {
+            elements.columnFilter.innerHTML = '<option value="all">Barcha ustunlar</option>';
+            columns.forEach(col => {
+                elements.columnFilter.innerHTML += `<option value="${col}">${col}</option>`;
+            });
+        }
+        
+        function updateFileInfo(file) {
+            elements.fileName.textContent = file.name;
+            elements.rowCount.textContent = data.length;
+            elements.fileTime.textContent = new Date().toLocaleTimeString();
+            elements.fileInfo.classList.add('show');
+        }
+        
+        function updateStats() {
+            elements.totalRows.textContent = data.length;
+            elements.totalColumns.textContent = columns.length;
+            elements.foundResults.textContent = currentResults.length;
+        }
+        
+        function showToast(message, type = 'success') {
+            elements.toastMessage.textContent = message;
+            elements.toast.className = `toast toast-${type} show`;
+            
             setTimeout(() => {
-                alert("Excel Qidiruv dasturiga xush kelibsiz!\n\nFoydalanish yo'riqnomasi:\n1. Excel faylni yuklang (XLS, XLSX yoki CSV formatida)\n2. Qidiruv maydoniga qidirayotgan so'zingizni kiriting\n3. Natijalarni pastda ko'ring");
-            }, 500);
-        });
+                elements.toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
